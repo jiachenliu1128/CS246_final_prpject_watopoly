@@ -36,10 +36,6 @@ int main(int argc,char* argv[]) {
         }
     }
 
-
-
-
-
     // initialize players
     if (!loadFile){
         int num_of_players = 0;
@@ -52,6 +48,7 @@ int main(int argc,char* argv[]) {
             cout << endl << "==> " << "Invalid Number, please restart the game. " << endl;
             return 0;
         }
+
         istringstream iss{tmp};
         iss >> num_of_players;
         if (num_of_players < 2 || num_of_players > 7) {
@@ -74,7 +71,6 @@ int main(int argc,char* argv[]) {
                     }
                 }
             }
-            // g.initPlayer need to check it's a valid name and char
         } 
         cout << endl << "==========================" << endl;
         cout << endl << "==> Current Players: " << endl;
@@ -98,6 +94,7 @@ int main(int argc,char* argv[]) {
         }
 
         if (g.endGame()) {
+            // only one player left
             cout << endl << "==> " << "Winner is :" << g.getWinner() << endl;
             break;
         }
@@ -110,9 +107,6 @@ int main(int argc,char* argv[]) {
         cout << endl << "==> " << "Your current cash: " << g.getCurrentPlayer().getCashAmount() << endl;
         cout << endl << "==> " << "Please Enter Command: " << endl;
         
-
-
-        
         cin >> cmd;
         if (cin.eof()){
             return 0;
@@ -124,7 +118,6 @@ int main(int argc,char* argv[]) {
         }
 
 
-        
         // In DC Tims Line
         if (cmd == "roll") {
             if (g.getcannotRoll()) {
@@ -134,7 +127,6 @@ int main(int argc,char* argv[]) {
             }
             if (g.getCurrentPlayer().getsentToDCTL() == true) {
                 // if last turn is also at DCTL
-                //cout << endl << "You are in DC Tims Line." << endl;
                 int n = g.getActiverRim();
                 DCTimsLine tmp1{0, "dc times line"};
                 Player& p = g.getCurrentPlayer();
@@ -173,9 +165,7 @@ int main(int argc,char* argv[]) {
                     continue;
                 }
             }
-            // roll dice and move
-            // check if has passed over OSAP
-            // if don't buy, auction.
+            // roll dice and move and check if has passed over OSAP. If don't buy, auction.
             int num1 = 0;
             int num2 = 0;
             if (testMode) {
@@ -186,23 +176,19 @@ int main(int argc,char* argv[]) {
             } 
             cout << endl << "==> " << "Roll result: " << num1 << " " << num2 << endl;
             if (g.getdoubleroll() >= 2 && num1 == num2) {
-                // cout << "==> " << "You have been sent to DC Tims Line." << endl;
-                //g.printMap();
                 cout << endl << "==> It's your third time with double roll, you will be sent to DC Tims Line." << endl;
                 g.getCurrentPlayer().setsentToDCTL(true);
                 g.getCurrentPlayer().setDCTLtimes(0);
-                g.getCurrentPlayer().setPosition(10); /////////////
+                g.getCurrentPlayer().setPosition(10); 
                 g.getCurrentPlayer().setOSAPcollect(false);
-                g.move(10 - g.getCurrentPlayer().getPosition()); /////////
+                g.move(10 - g.getCurrentPlayer().getPosition()); 
                 cout << endl << "==> " << "You cannot roll more than three times." << endl;
                 cout << endl << "==> " << "You can end your turn by 'next'." << endl;
                 g.setcannotRoll(true);
                 g.setrolled(true);
                 g.setdoubleroll (g.getdoubleroll() + 1);
                 continue;
-            } //else {
-                //g.move(num1 + num2);
-            //}
+            } 
             if (num1 == num2 && g.getCurrentPlayer().getsentToDCTL() != true) {
                 cout << endl << "==> " << "You rolled double." << endl;
                 cout << endl << "==> " << "You can roll again by 'roll'." << endl;
@@ -219,11 +205,10 @@ int main(int argc,char* argv[]) {
                 g.setrolled(true);
                 continue;
             }
-            
-            
 
+
+        // Move to next player
         } else if (cmd == "next") {
-            // move to next 
             if (!g.getrolled()) {
                 // not rolled yet
                 cout << endl << "==> Cannot move to the next player. You must roll in your turn." << endl;
@@ -236,7 +221,7 @@ int main(int argc,char* argv[]) {
             g.setcannotRoll(false);
             
 
-
+        // Do trading
         } else if (cmd == "trade") {
             string name = " ";
             string give = " ";
@@ -261,7 +246,6 @@ int main(int argc,char* argv[]) {
                 istringstream iss{give};
                 int money = 0;
                 iss >> money;
-                //Board& b = g.getBoard(receive);
 
                 // game functin need to check:
                 // property is owned by the given player
@@ -282,7 +266,6 @@ int main(int argc,char* argv[]) {
                 }
 
                 Player& p = g.getPlayer(name);
-                //Board& b = g.getBoard(give);
                 istringstream iss{receive};
                 int money = 0;
                 iss >> money;
@@ -306,14 +289,10 @@ int main(int argc,char* argv[]) {
                 }
 
                 Player& p = g.getPlayer(name);
-                //Board& b_give = g.getBoard(give);
-                //Board& b_receive = g.getBoard(give);
 
                 // game functin need to check:
                 // property is owned by the given player
                 // and all properties in the monopoly have no improvements
-                //string name1 = b_give.getName();
-                //string name2 = b_receive.getName();
                 if (!(g.trade(p, give, receive))) {
                     cout << endl << "==> " << "reject" << endl;
                 } 
@@ -324,8 +303,9 @@ int main(int argc,char* argv[]) {
                 cout << endl << "==> " << "reject" << endl;
             }
 
+
+        // do improvements
         } else if (cmd == "improve") {
-            // cout << endl << "==> <Property> buy/sell" << endl;
             string property = " ";
             string behaviour = " ";
             cin >> property >> behaviour;
@@ -334,7 +314,6 @@ int main(int argc,char* argv[]) {
                 cout << endl << "==> " << "Invalid property name." << endl;
                 continue;
             }
-            //Board& b = g.getBoard(property);
 
             if (behaviour == "buy") {
                 // game function need to check property is a property
@@ -359,6 +338,8 @@ int main(int argc,char* argv[]) {
             } 
             g.printMap();
 
+
+        // mortgage
         } else if (cmd == "mortgage") {
             string property = " ";
             cin >> property;
@@ -367,16 +348,16 @@ int main(int argc,char* argv[]) {
                 cout << endl << "==> " << "Invalid property name." << endl;
                 continue;
             }
-            //Board& b = g.getBoard(property);
 
             // attempt to mortgage property
             // check property is owned by player, and can mortgage 
             // (not already mortgaged, has no improvements)
             if (!(g.mortgage(property))) {
                 cout << endl << "==> " << "Unable to mortgage." << endl;
-                //cout << endl << "==> " << "You can end your turn by 'next'." << endl;
             }
 
+
+        // unmortgage
         } else if (cmd == "unmortgage") {
             string property = " ";
             cin >> property;
@@ -385,8 +366,6 @@ int main(int argc,char* argv[]) {
                 cout << endl << "==> " << "Invalid property name." << endl;
                 continue;
             }
-            //Board& b = g.getBoard(property);
-
             // attempt to unmortgage property
             // check property used to owned by player, and can unmortgage 
             // (not already unmortgaged)
@@ -394,6 +373,8 @@ int main(int argc,char* argv[]) {
                 cout << endl << "==> " << "Unable to unmortgage." << endl;
             }
 
+
+        // declare bankreptcy
         } else if (cmd == "bankrupt") {
             if (g.getCurrentPlayer().getCashAmount()<0) {
             // owe to bank;
@@ -401,34 +382,33 @@ int main(int argc,char* argv[]) {
             } else {
                 cout << endl << "==> You still have sufficient muney. You cannot declare bankruptcy." << endl;
             }
-            
+        
+
+        // displays the assets of the current player. 
         } else if (cmd == "assets") {
-            // displays the assets of the current player. 
             // Does not work if the player is deciding how to pay Tuition
-            // if (!(g.asset())) {
-            //     cout << "==> " << "Cannot display your assets at this stage" << endl;
-            // }
             g.asset();
 
+
+        // displays the assets of every player.
         } else if (cmd == "all") {
-            // displays the assets of every player. For verifying the 
-            // correctness of your transactions. 
             // Does not work if a player is deciding how to pay Tuition. 
-            // if (!(g.all())) {
-            //     cout << "==> " << "Cannot display everyone's asset at this stage" << endl;
-            // }
             g.all();
+
 
         } else if (cmd == "save") {
             string filename;
             cin >> filename;
             g.save(filename);
 
+
         } else if (cmd == "print") {
             g.printMap();
             
+
         } else if (cmd == "quit") {
             return 0;
+
 
         } else {
             cerr << endl << "==> Invalid Command." << endl;
