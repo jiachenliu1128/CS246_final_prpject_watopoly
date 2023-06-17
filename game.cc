@@ -15,14 +15,12 @@ class Gym;
 class Residence;
 class GooseNesting;
 
-// ctor of Game
+// see game.h for details
 Game::Game(): activeRim{0} {
   vector<string> names = {"COLLECT OSAP", "AL", "SLC", "ML", "TUITION", "MKV", "ECH", "NEEDLES HALL", "PAS", "HH", "DC Tims Line", "RCH", "PAC", "DWE", "CPH", "UWP", "LHI", "SLC", "BMH", "OPT", "Goose Nesting", "EV1", "NEEDLES HALL", "EV2", "EV3", "V1", "PHYS", "B1", "CIF", "B2", "GO TO TIMS", "EIT", "ESC", "SLC", "C2", "REV", "NEEDLES HALL", "MC", "COOP FEE", "DC"};
-
   dice = make_unique<Dice>();
   currentPlayer = nullptr;
-  // auto& osap = make_shared<OSAP>(0, "COLLECT OSAP");
-  // board.emplace_back(osap);
+
   board.emplace_back(std::static_pointer_cast<Board>(make_shared<OSAP>(0, "COLLECT OSAP"))); //unique or shared?
   board.emplace_back(std::static_pointer_cast<Board>(make_shared<AcademicBuilding>(1, "AL", 40, 0, vector<unsigned int>{2, 10, 30, 90, 160, 250}, 50, "Arts1")));
   board.emplace_back(std::static_pointer_cast<Board>(make_shared<SLC>(2, "SLC")));
@@ -65,29 +63,36 @@ Game::Game(): activeRim{0} {
   board.emplace_back(std::static_pointer_cast<Board>(make_shared<AcademicBuilding>(39, "DC", 400, 0, vector<unsigned int>{50, 200, 600, 1400, 1700, 2000}, 200, "Math")));
 }
 
-// dctor of Game
+
+// see game.h for details
 Game::~Game() {}
 
-// roll dice in Game
+
+// see game.h for details
 int Game::roll() {
   return dice->rollDice();
 }
 
-// initialize currentPlayer
+
+// see game.h for details
 void Game::gameStart() {
   currentPlayer = player[0];
 }
 
+
+// see game.h for details
 Player& Game::getCurrentPlayer() {
   return *currentPlayer;
 }
 
-// check if there is only one player left
+
+// see game.h for details
 bool Game::endGame() {
   return player.size() == 1;
 }
 
-// print all Players' name and char
+
+// see game.h for details
 void Game::printPlayers() {
   for (auto& p : player) {
     std::cout << std::endl << "==> Name: " << p->getName() << endl << "==> Char:" << p->getNameChar() << endl;
@@ -95,18 +100,13 @@ void Game::printPlayers() {
 }
 
 
-// get the winner
+// see game.h for details
 string Game::getWinner() {
   return (player[0])->getName();
 }
 
 
-
-
-
-
-
-// move the player num steps and do corresponding actions
+// see game.h for details
 void Game::move(int num, shared_ptr<Player> p) {
   if (p == nullptr) p = currentPlayer;
   int curPos = p->getPosition();
@@ -125,7 +125,6 @@ void Game::move(int num, shared_ptr<Player> p) {
   shared_ptr<Board> now = board[newPos];
   string nowType = now->getType();
 
-
   if (nowType == "AcademicBuilding" || nowType == "Gym" || nowType == "Residence") {
     std::cout << std::endl << "==> You have arrived at " << now->getName() << "." << endl;
     // is property
@@ -142,7 +141,6 @@ void Game::move(int num, shared_ptr<Player> p) {
             string name = now->getName();
             purchase(name, *p); 
             buy = true;
-            // std::cout << "==> You bought " << name << endl;
           } else {
             std::cout << std::endl << "==> You don't have enough money, choose again." << endl;
             buy = false;
@@ -178,26 +176,6 @@ void Game::move(int num, shared_ptr<Player> p) {
         now->getOwner()->addCash(visitPrice);
         std::cout << std::endl << "==> You paid $" << visitPrice << " to " << (now->getOwner())->getName() << endl;
       }
-      // if (p->getCashAmount() >= 0) return;
-      // else { // in debt
-      //   // bankruptcy(p->getName(),now->getOwner()->getName(),visitPrice);
-      //   // std::cout << "You are in debt" << endl;
-      //   // std::cout << "Choose: 'mortgage' or 'trade' or 'degrade'" << endl;
-      //   // string choice;
-      //   // cin >> choice;
-        ////////////////////////////////////////////////////////////////////////////
-        // input property name and check
-        // if (choice == "mortgage") {
-        //   mortgage(now);
-        // } else if (choice == "trade") {
-        //   trade(now);
-        // } else if (choice == "degrade") {
-        //   degrade(now);
-        // } else {
-        //   std::cout << "Invalid input" << endl;
-        // }
-        ////////////////////////////////////////////////////////////////////////////////
-      // } 
     }
   } else { // NonProperty 
     printMap();
@@ -241,7 +219,6 @@ void Game::move(int num, shared_ptr<Player> p) {
       int m = tmp1.action(*p, n);
       setActiverRim(m);
 
-
     } else if (nowName == "NEEDLES HALL") {
       NeedleHall tmp{0, "needles hall"};
       int n = getActiverRim();
@@ -256,10 +233,10 @@ void Game::move(int num, shared_ptr<Player> p) {
       return;
     }
   }
-  //////////////////////////////////////////////////////////////////////////
 }
 
 
+// see game.h for details
 void Game::nextPlayer() {
   for (size_t i = 0; i < player.size(); ++i) {
     if (player[i] == currentPlayer) {
@@ -271,9 +248,7 @@ void Game::nextPlayer() {
 }
 
 
-
-
-
+// see game.h for details
 bool Game::initPlayer(string name, char c) {
   // bool flag = false;
   for (auto& p: player) {
@@ -286,42 +261,24 @@ bool Game::initPlayer(string name, char c) {
       return false;
     }
   }
-  // if (name == "Goose") flag = true;
-  // if (name == "GRT Bus") flag = true;
-  // if (name == "Tim Hortons Doughnut") flag = true;
-  // if (name == "Professor") flag = true;
-  // if (name == "Student") flag = true;
-  // if (name == "Money") flag = true;
-  // if (name == "Laptop") flag = true;
-  // if (name == "Pink tie") flag = true;
-  // if (!flag) {
-  //   return false;
-  // }
   shared_ptr<Player> p = make_shared<Player>(name, c);
   player.emplace_back(p);
   return true;
-  //td->drawBoard(std::cout, player, board);
 }
 
 
-
-
-
+// see game.h for details
 shared_ptr<Player> Game::getOwner(const Board& b) {
   return b.getOwner();
 }
 
 
-
-
-
+// see game.h for details
 void Game::purchase(string b, Player& p) {
   shared_ptr<Board> tmp = nullptr;
   shared_ptr<Player> tmp1 = nullptr;
   for(auto& it:board){
       if(it->getName()==b){
-    //    p.addProperties(it);
-        //p.addCash(-it->getPrice());
         tmp = it;
         break;
       }
@@ -342,18 +299,13 @@ void Game::purchase(string b, Player& p) {
     } else {
       std::cout << std::endl << "==> You don't have enough money" << endl;
     }
-    
-    // shared_ptr<Board> sharedb = make_shared<Board>(b);
-    // auto sharedb = std::dynamic_pointer_cast<Board>(b);
-    // shared_ptr<Board> sharedb = b;
-    
+
   } else std::cout << std::endl << "==> This property is already owned by " << (tmp->getOwner())->getName() << endl;
   std::cout << std::endl << "==> "<< tmp->getName() <<"'s new owner is " << (tmp->getOwner())->getName() << endl;
 }
 
 
-
-
+// see game.h for details
 bool Game::isValidPlayer(string name) {
   for (auto& p : player) {
     if (p->getName() == name) return true;
@@ -362,9 +314,7 @@ bool Game::isValidPlayer(string name) {
 }
 
 
-
-
-
+// see game.h for details
 bool Game::isValidProperty(string bName) {
   for (auto& b : board) {
     if (b->getName() == bName && b->getType() != "NonProperty") return true;
@@ -373,9 +323,7 @@ bool Game::isValidProperty(string bName) {
 }
 
 
-
-
-
+// see game.h for details
 Player& Game::getPlayer(string name) {
   for (auto &p : player) {
     if (p->getName() == name) return *p;
@@ -385,9 +333,7 @@ Player& Game::getPlayer(string name) {
 }
 
 
-
-
-
+// see game.h for details
 bool Game::trade(Player& p, string b, unsigned int n) {
   shared_ptr<Board> sharedb = nullptr;
   for(auto& it : board){
@@ -419,7 +365,7 @@ bool Game::trade(Player& p, string b, unsigned int n) {
         std::cout << endl  << "==> " << it->getName() << " is in the monopoly block of " << b << "." << endl;
         std::cout << endl  << "==> However, " << sharedb->getName() << " is improved, you need to sell them before trade this property." << endl;
         return false;
-    }
+      }
     }
   }
 
@@ -436,8 +382,6 @@ bool Game::trade(Player& p, string b, unsigned int n) {
     string choice;
     cin >> choice;
     if (choice == "accept") {
-      // shared_ptr<Player> sharedp = make_shared<Player>(p); 
-      // sharedb->setOwner(sharedp);
       shared_ptr<Player> sharedp = nullptr; 
      for(auto& it3 : player){
         if(it3->getName()==p.getName()){
@@ -462,11 +406,7 @@ bool Game::trade(Player& p, string b, unsigned int n) {
 }
 
 
-
-
-
-
-
+// see game.h for details
 bool Game::trade(Player& p, string b_give, string b_receive) {
       shared_ptr<Board> sharedb = nullptr;
       for(auto& it : board){
@@ -535,7 +475,6 @@ bool Game::trade(Player& p, string b_give, string b_receive) {
       }
     }
     
-
   if (sharedb->getOwner() == currentPlayer) {
     std::cout << std::endl << "==> " << currentPlayer->getName() << " is trading " << sharedb->getName() << " with " << p.getName() <<  " for " << sharedb2->getName() << endl;
     std::cout << std::endl << "==> " << p.getName() << ", please make a decision." << endl;
@@ -565,10 +504,7 @@ bool Game::trade(Player& p, string b_give, string b_receive) {
 }
 
 
-
-
-
-
+// see game.h for details
 bool Game::trade(Player& p, unsigned int n, string b) {
   shared_ptr<Board> sharedb = nullptr;
   for(auto& it : board){
@@ -601,7 +537,6 @@ bool Game::trade(Player& p, unsigned int n, string b) {
         }
       }
     }
-
 
   int q = n;
   if (currentPlayer->getCashAmount() < q) {
@@ -637,9 +572,7 @@ bool Game::trade(Player& p, unsigned int n, string b) {
 }
 
 
-
-
-
+// see game.h for details
 bool Game::improve(string b_name, bool improve) {
   shared_ptr<Board> b = nullptr;
   for(auto& it : board){
@@ -700,11 +633,7 @@ bool Game::improve(string b_name, bool improve) {
 }
 
 
-
-
-
-
-
+// see game.h for details
 bool Game::mortgage(string b_name) {
   shared_ptr<Board> b = nullptr;
   for(auto& it : board){
@@ -720,29 +649,23 @@ bool Game::mortgage(string b_name) {
       currentPlayer->addCash(m);
       b->changeMortgage();
       std::cout << std::endl << "==> You've mortgaged succesfully and received: $" << m <<endl;
-      //std::cout << std::endl << "==> Enter a command or end your turn by 'next'." << endl;
       return true;
     } else {
       if (b->getImproveLevel() != 0) {
         std::cout << std::endl << "==> You can't mortgage this property because it has improvements" << endl;
-        //std::cout << std::endl << "==> Enter a command or end your turn by 'next'." << endl;
       } else {
         std::cout << std::endl << "==> You can't mortgage this property because it is already mortgaged" << endl;
-        // std::cout << "Enter a command or end your turn by 'next'." << endl;
       }
       return false;
     }
   } else {
     std::cout << std::endl << "==> You don't own this property." << endl;
-    // std::cout << "==> Enter a command or end your turn by 'next'." << endl;
     return false;
   }
 }
 
 
-
-
-
+// see game.h for details
 bool Game::unmortgage(string b_name) {
   shared_ptr<Board> b = nullptr;
   for(auto& it : board){
@@ -758,29 +681,23 @@ bool Game::unmortgage(string b_name) {
         currentPlayer->addCash(m);
         b->changeMortgage();
         std::cout << std::endl << "==> You've unmortgaged by using $" << m << endl;
-        //std::cout << std::endl << "==> Enter a command or end your turn by 'next'." << endl;
         return true;
       } else {
         std::cout << std::endl << "==> You don't have enough money to unmortgage" << endl;
-        //std::cout << std::endl << "==> Enter a command or end your turn by 'next'." << endl;
         return false;
       }
     } else {
       std::cout << std::endl << "==> This property is not mortgaged" << endl;
-      //std::cout << std::endl << "==> Enter a command or end your turn by 'next'." << endl;
       return false;
     }
   } else {
      std::cout << std::endl << "==> You are not the owner" << endl;
-     //std::cout << std::endl << "==> Enter a command or end your turn by 'next'." << endl;
     return false;
   }
 }
 
 
-
-
-
+// see game.h for details
 void Game::bankruptcy(string playerName, string owePlayer, int oweAmount){
   shared_ptr<Player> cur_p = nullptr;
   shared_ptr<Player> owe_p = nullptr;
@@ -827,7 +744,6 @@ void Game::bankruptcy(string playerName, string owePlayer, int oweAmount){
           removePlayer(playerName);
           return;
         }
-        
         std::cout << std::endl << "==> Your properties will be liquidated and we will move to the next player. " << endl;
 
         // decide bankrupty
@@ -839,7 +755,6 @@ void Game::bankruptcy(string playerName, string owePlayer, int oweAmount){
           // give cup
           owe_p->setRURCup(owe_p->getRURCup() + cur_p->getRURCup());
           // give property
-          // std::vector<std::shared_ptr<Board>> cur_p_property = cur_p->getProperty();
           // for every property
           for (auto& it: (cur_p->getProperty())) {
             // move to owe_p
@@ -969,7 +884,6 @@ void Game::bankruptcy(string playerName, string owePlayer, int oweAmount){
         std::cout << endl << "==> Input: "<< endl;
       }
 
-      
       if(cur_p->getCashAmount() < oweAmount){
           std::cout << std::endl << "==> Your cash is still not enough, you need to sell improvements (input 0), or mortgage (input 1), or declare bankrupt (input 2)" <<endl;
           continue;
@@ -992,8 +906,7 @@ void Game::bankruptcy(string playerName, string owePlayer, int oweAmount){
 }
 
      
-
-
+// see game.h for details
 void Game::removePlayer(string name) {
   for (size_t i = 0; i < player.size(); ++i) {
     if (player[i]->getName() == name) {
@@ -1003,6 +916,8 @@ void Game::removePlayer(string name) {
   }
 }
 
+
+// see game.h for details
 void Game::asset() {
   std::cout << endl << "=============================================" << endl;
   std::cout << std::endl << "==> " << currentPlayer->getName()<<", your assets:" << endl;
@@ -1017,6 +932,8 @@ void Game::asset() {
   std::cout << std::endl << "==> " << "Enter a command or end your turn by 'next'." << endl;
 }
 
+
+// see game.h for details
 void Game::all() {
   std::cout << endl << "=============================================" << endl;
   for (auto& it : player) {
@@ -1033,6 +950,8 @@ void Game::all() {
   std::cout << std::endl << "==> " << "Enter a command or end your turn by 'next'." << endl;
 }
 
+
+// see game.h for details
 ofstream Game::save(string filename) {
   ofstream file(filename);
   file << player.size() << endl;
@@ -1076,6 +995,8 @@ ofstream Game::save(string filename) {
   return file;
 }
 
+
+// see game.h for details
 void Game::load(ifstream& f) {
   int num = 0;
   string name = " ";
@@ -1161,14 +1082,20 @@ void Game::load(ifstream& f) {
   std::cout << std::endl << "==> "<<"Game loaded!"<<endl;
 }
 
+
+// see game.h for details
 int Game::getActiverRim() {
   return activeRim;
 }
 
+
+// see game.h for details
 void Game::setActiverRim(int n) {
   activeRim = n;
 }
 
+
+// see game.h for details
 void Game::auction(string pro) {
   shared_ptr<Board> sharedb= nullptr;
   for(auto& it : board){
@@ -1263,6 +1190,8 @@ void Game::auction(string pro) {
   }
 }
 
+
+// see game.h for details
 void Game::printMap(){
   TextDisplay td;
   td.drawBoard(std::cout, player, board);

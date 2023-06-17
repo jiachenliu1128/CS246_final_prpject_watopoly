@@ -24,7 +24,7 @@ public:
   // int getPurchasePrice() const;
   
   virtual void setVisitPrice() = 0;
-  virtual int getVisitPrice(Player& visitor)= 0;
+  virtual int getVisitPrice(Player& visitor) override = 0;
 };
 
 #endif

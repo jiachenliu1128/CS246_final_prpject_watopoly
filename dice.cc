@@ -8,6 +8,8 @@
 #include <chrono>
 using namespace std;
 
+
+// see dice.h for details
 int Dice::rollDice() {
 	vector<int> v = { 1, 2, 3, 4, 5, 6};
   	vector<int> s = {};
@@ -19,7 +21,7 @@ int Dice::rollDice() {
 		for ( int i : v ) s.emplace_back(i);
 	} 
 	return s[0];
-} // main
+}
 
 
 

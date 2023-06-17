@@ -13,6 +13,11 @@
 
 
 class DCTimsLine: public NonProperty {
+    int nextmove = 0;
+
+    // int roll() creates random number
+    // requires: None
+    // effects: None
     int roll() {
         std::vector<int> v = { 1, 2, 3, 4, 5, 6};
         std::vector<int> s = {};
@@ -22,19 +27,24 @@ class DCTimsLine: public NonProperty {
         std::shuffle( v.begin(), v.end(), rng );
         for ( int i : v ) s.emplace_back(i);
 	    } 
-
 	return s[0];
     }
-    int nextmove = 0;
 
 public:
+    // ctor of DCTimsLine
     DCTimsLine(int position, std::string name): NonProperty(position, name) {}
+
+    // dtor of DCTimsLine
     ~DCTimsLine() {};
 
-
+    // int getNextMove() returns the next move after landing on DCTimsLine
+    // requires: None
+    // effects: None
     int getNextMove() override {return nextmove;}
 
-
+    // int action(Player &p, int cup) do the action after landing on DCTimsLine
+    // requires: None
+    // effects: modifies this
     int action(Player &p, int cup) override{
         int tmpCup = cup;
         nextmove = 0;
